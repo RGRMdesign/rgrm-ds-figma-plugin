@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RGRM DS</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: var(--figma-color-bg);
+        --bg-secondary: var(--figma-color-bg-secondary);
+        --bg-hover: var(--figma-color-bg-hover);
+        --border: var(--figma-color-border);
+        --text: var(--figma-color-text);
+        --text-secondary: var(--figma-color-text-secondary);
+        --text-disabled: var(--figma-color-text-disabled);
+        --brand: var(--figma-color-bg-brand);
+        --brand-text: var(--figma-color-text-onbrand);
+        --danger: var(--figma-color-text-danger);
+        --radius: 6px;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font: 11px/16px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .tabs {
+        display: flex;
+        gap: var(--space-1);
+        padding: var(--space-3) var(--space-4) 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .tab {
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        padding: var(--space-2) var(--space-3);
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 500;
+      }
+
+      .tab.active {
+        color: var(--text);
+        border-bottom-color: var(--brand);
+      }
+
+      .tab:disabled {
+        color: var(--text-disabled);
+        cursor: not-allowed;
+      }
+
+      main {
+        flex: 1;
+        padding: var(--space-4);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .panel {
+        display: none;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .panel.active {
+        display: flex;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+
+      .field[hidden] {
+        display: none;
+      }
+
+      label {
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      .field-label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+      }
+
+      .info-tooltip {
+        position: relative;
+        display: inline-flex;
+      }
+
+      .info-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      .info-button:hover,
+      .info-button[aria-expanded="true"] {
+        color: var(--text);
+        background: var(--bg-hover);
+      }
+
+      .info-button svg {
+        display: block;
+      }
+
+      .tooltip {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        z-index: 10;
+        width: 280px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg);
+        padding: var(--space-3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      }
+
+      .tooltip[hidden] {
+        display: none;
+      }
+
+      .tooltip-title {
+        display: block;
+        margin-bottom: var(--space-1);
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      select,
+      input[type="number"] {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg-secondary);
+        color: var(--text);
+        padding: var(--space-2) var(--space-3);
+        font: inherit;
+      }
+
+      select:focus,
+      input:focus {
+        outline: 2px solid var(--brand);
+        outline-offset: 1px;
+      }
+
+      .status {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg-secondary);
+        padding: var(--space-3);
+      }
+
+      .status strong {
+        display: block;
+      }
+
+      .status strong + .hint {
+        margin-top: var(--space-1);
+      }
+
+      .status.valid strong {
+        color: var(--text);
+      }
+
+      .status.invalid strong {
+        color: var(--danger);
+      }
+
+      .hint {
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      .layer-list {
+        margin: var(--space-2) 0 0;
+        padding-left: 18px;
+        color: var(--text-secondary);
+      }
+
+      .layer-list code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 10px;
+      }
+
+      .feedback {
+        min-height: 16px;
+        color: var(--text-secondary);
+      }
+
+      .feedback.error {
+        color: var(--danger);
+      }
+
+      .feedback.success {
+        color: var(--text);
+      }
+
+      footer {
+        padding: var(--space-4);
+        border-top: 1px solid var(--border);
+      }
+
+      .primary-button {
+        width: 100%;
+        border: none;
+        border-radius: var(--radius);
+        background: var(--brand);
+        color: var(--brand-text);
+        padding: var(--space-2) var(--space-3);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .primary-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <nav class="tabs" role="tablist">
+        <button
+          class="tab active"
+          data-tab="export-variables"
+          role="tab"
+          aria-selected="true"
+        >
+          Export Variables
+        </button>
+        <button
+          class="tab"
+          data-tab="document-variables"
+          role="tab"
+          aria-selected="false"
+        >
+          Document Variables
+        </button>
+      </nav>
+
+      <main>
+        <section
+          class="panel"
+          id="panel-document-variables"
+          role="tabpanel"
+          hidden
+        >
+          <div class="field">
+            <div class="field-label">
+              <label for="selection-status">Template</label>
+              <div class="info-tooltip">
+                <button
+                  type="button"
+                  class="info-button"
+                  id="layer-mapping-info"
+                  aria-label="Layer mapping info"
+                  aria-expanded="false"
+                  aria-controls="layer-mapping-tooltip"
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <circle cx="6" cy="6" r="5.25" stroke="currentColor" />
+                    <path
+                      d="M6 5.25V8.25M6 3.75H6.0075"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </button>
+                <div
+                  class="tooltip"
+                  id="layer-mapping-tooltip"
+                  role="tooltip"
+                  hidden
+                >
+                  <strong class="tooltip-title">Layer mapping</strong>
+                  <p class="hint">
+                    Name layers in your template component to fill them
+                    automatically:
+                  </p>
+                  <ul class="layer-list">
+                    <li><code>name</code> — variable name</li>
+                    <li><code>value</code> — fully resolved value</li>
+                    <li>
+                      <code>alias</code> / <code>reference</code> — referenced
+                      variable (empty if direct value)
+                    </li>
+                    <li>
+                      <code>alias-collection</code> / <code>reference-collection</code>
+                      — collection of referenced variable (empty if direct value)
+                    </li>
+                    <li><code>type</code> — STRING, FLOAT, BOOLEAN, or COLOR</li>
+                    <li><code>description</code> — description</li>
+                    <li><code>collection</code> — source collection name</li>
+                    <li>
+                      <code>color</code> / <code>swatch</code> — color swatch
+                      (COLOR)
+                    </li>
+                    <li>
+                      <code>bind-color</code> — binds COLOR variable to fill
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="status invalid" id="selection-status" role="status">
+              <strong>Select a component, component set, or instance on the canvas</strong>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="collection-select">Variable collection</label>
+            <select id="collection-select">
+              <option value="">Loading...</option>
+            </select>
+          </div>
+
+          <div class="field" id="mode-field" hidden>
+            <label for="mode-select">Mode</label>
+            <select id="mode-select" disabled>
+              <option value="">Select a collection first</option>
+            </select>
+          </div>
+
+          <p class="feedback" id="feedback" aria-live="polite"></p>
+        </section>
+
+        <section
+          class="panel active"
+          id="panel-export-variables"
+          role="tabpanel"
+        >
+          <div class="status valid" role="status">
+            <strong>Export all variable collections</strong>
+            <p class="hint">
+              Downloads a <code>figma.zip</code> with one directory per
+              collection. Single-mode collections export as
+              <code>tokens.json</code>; multi-mode collections export as
+              <code>[mode].tokens.json</code> per mode.
+            </p>
+          </div>
+
+          <p class="feedback" id="export-feedback" aria-live="polite"></p>
+        </section>
+      </main>
+
+      <footer>
+        <button class="primary-button" id="run-button" disabled>
+          Export variables
+        </button>
+      </footer>
+    </div>
+
+    <script src="./index.ts" type="module"></script>
+  </body>
+</html>
