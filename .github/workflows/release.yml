@@ -46,8 +46,47 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
         run: |
-          TAG=$(node -p "const p=require('./package.json'); p.name + '@' + p.version")
-          ZIP="rgrm-ds-figma-plugin-v$(node -p "require('./package.json').version").zip"
+          TAG=$(node -e "
+            const published = process.env.PUBLISHED_PACKAGES;
+            if (published) {
+              const [pkg] = JSON.parse(published);
+              if (pkg?.name && pkg?.version) {
+                console.log(pkg.name + '@' + pkg.version);
+                process.exit(0);
+              }
+            }
+            const pkg = require('./package.json');
+            console.log(pkg.name + '@' + pkg.version);
+          ")
+          VERSION=$(node -p "require('./package.json').version")
+          ZIP="rgrm-ds-figma-plugin-v${VERSION}.zip"
+          NOTES_FILE=$(mktemp)
+
           zip -r "$ZIP" dist manifest.json
-          gh release upload "$TAG" "$ZIP" --clobber
+
+          node -e "
+            const fs = require('fs');
+            const version = require('./package.json').version;
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+            const heading = '## ' + version;
+            const start = changelog.indexOf(heading);
+            if (start === -1) {
+              fs.writeFileSync(process.argv[1], 'Release v' + version);
+              process.exit(0);
+            }
+            const next = changelog.indexOf('\n## ', start + heading.length);
+            const notes = next === -1
+              ? changelog.slice(start).trim()
+              : changelog.slice(start, next).trim();
+            fs.writeFileSync(process.argv[1], notes);
+          " "$NOTES_FILE"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP" --clobber
+          else
+            gh release create "$TAG" "$ZIP" --title "v${VERSION}" --notes-file "$NOTES_FILE"
+          fi
+
+          rm "$NOTES_FILE"
