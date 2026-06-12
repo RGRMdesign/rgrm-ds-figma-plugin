@@ -39,6 +39,17 @@ Under **Settings → Actions → General → Workflow permissions**, enable:
 
 Without this, the Version Packages PR cannot be created automatically.
 
+## manifest.json (Figma Community)
+
+After the **first** publish to Figma Community, sync `manifest.json` on `main`:
+
+| Field | What to set |
+|---|---|
+| `id` | The numeric plugin ID assigned by Figma (see **Plugins → Manage plugins**). Replace the development placeholder. |
+| `networkAccess` | Required for publish. Use `{ "allowedDomains": ["none"] }` when the plugin makes no network requests. |
+
+Commit these changes (with a patch changeset) before building release artifacts so git tags and GitHub Release zips match what you publish to Figma.
+
 ## Figma Community (manual)
 
 After each GitHub Release:
