@@ -1,5 +1,11 @@
 # rgrm-ds-figma-plugin
 
+## 0.1.1
+
+### Patch Changes
+
+- f73d27e: Sync manifest with Figma Community publish requirements (plugin ID and network access declaration). No functional changes.
+
 ## 0.1.0
 
 ### Minor Changes
