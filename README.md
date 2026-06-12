@@ -64,6 +64,18 @@ src/
 
 Add new options as an extra tab in the UI and as a feature module under `src/features/`.
 
+## Versioning & releases
+
+This project uses [Changesets](https://github.com/changesets/changesets) for semver, [CHANGELOG.md](CHANGELOG.md), git tags, and GitHub Releases.
+
+When your PR includes user-facing changes in `src/`, add a changeset:
+
+```bash
+pnpm changeset
+```
+
+After merge to `main`, GitHub Actions opens a **Version Packages** PR. Merging that PR creates a tagged release with build artifacts. Publish the plugin to Figma Community manually — see [docs/RELEASING.md](docs/RELEASING.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

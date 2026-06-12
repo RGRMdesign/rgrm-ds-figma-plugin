@@ -1,6 +1,6 @@
 {
   "name": "rgrm-ds-figma-plugin",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "license": "MIT",
   "packageManager": "pnpm@10.12.1",
   "engines": {
@@ -13,9 +13,14 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "watch": "node build.mjs --watch"
+    "watch": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm run build"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@figma/plugin-typings": "^1.108.0",
     "esbuild": "^0.25.0",
     "typescript": "^5.7.0"
