@@ -1,9 +1,12 @@
 {
   "name": "RGRM DS",
-  "id": "rgrm-ds-figma-plugin",
+  "id": "1647180597981838242",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",
   "editorType": ["figma"],
-  "documentAccess": "dynamic-page"
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
 }
