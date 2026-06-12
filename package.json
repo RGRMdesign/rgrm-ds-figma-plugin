@@ -1,6 +1,7 @@
 {
   "name": "rgrm-ds-figma-plugin",
   "version": "0.1.0",
+  "private": true,
   "license": "MIT",
   "packageManager": "pnpm@10.12.1",
   "engines": {
@@ -17,7 +18,7 @@
     "typecheck": "tsc --noEmit",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm run build"
+    "release": "pnpm run build && changeset tag"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

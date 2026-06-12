@@ -25,7 +25,7 @@ Na merge op `main`:
 1. De **Release** workflow opent een PR **Version Packages** als er open changesets liggen.
 2. Die PR bump't `package.json`, werkt `CHANGELOG.md` bij en verwijdert verwerkte changesets.
 3. Na merge van **Version Packages**:
-   - maakt GitHub Actions een git-tag (`vX.Y.Z`);
+   - maakt GitHub Actions een git-tag (`rgrm-ds-figma-plugin@X.Y.Z`);
    - publiceert een [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases) met release notes uit de changelog;
    - uploadt een zip met `dist/` en `manifest.json`.
 
@@ -37,7 +37,7 @@ Na elke GitHub Release:
 
    ```bash
    git fetch --tags
-   git checkout vX.Y.Z
+   git checkout rgrm-ds-figma-plugin@X.Y.Z
    pnpm install
    pnpm run build
    ```
@@ -53,17 +53,16 @@ Alleen nodig als CI niet beschikbaar is:
 
 ```bash
 pnpm changeset version   # bump versie + changelog
-pnpm release             # build
 git add .
 git commit -m "chore: version packages"
-git tag vX.Y.Z
-git push origin main --tags
-gh release create vX.Y.Z --notes-file <(sed -n '/^## /,$p' CHANGELOG.md | head -n 20)
+pnpm release             # build + git tag (package@version)
+git push origin main --follow-tags
+gh release create "$(node -p "const p=require('./package.json'); p.name + '@' + p.version")" --notes-file <(sed -n '/^## /,$p' CHANGELOG.md | head -n 20)
 ```
 
 ## Versiehistorie bekijken
 
 - **Changelog** — [CHANGELOG.md](../CHANGELOG.md)
-- **Git tags** — `git tag -l 'v*'`
+- **Git tags** — `git tag -l 'rgrm-ds-figma-plugin@*'`
 - **GitHub Releases** — tab Releases in de repository
-- **Diff tussen versies** — `git log v0.1.0..v0.2.0`
+- **Diff tussen versies** — `git log rgrm-ds-figma-plugin@0.1.0..rgrm-ds-figma-plugin@0.2.0`
